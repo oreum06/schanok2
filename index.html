@@ -33,6 +33,7 @@
 body.hc{--bg:#fff; --paper:#fff; --ink:#000; --muted:#1a1a1a; --line:#000; --giwa:#001a66; --c0:#001a66; --c1:#00402f; --c2:#24106b; --c3:#7a0f05; --c4:#6b2e00; --c5:#6b2e00; --ok:#00561f; --bad:#8a0000; color-scheme:light}
 
 html,body{height:100%}
+body{height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere;-webkit-tap-highlight-color:transparent}
 *{box-sizing:border-box}
 button,input{font:inherit;color:inherit}
@@ -55,7 +56,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.3;margin:0
   box-shadow:0 10px 30px var(--shadow),inset 14px 0 18px -14px var(--shadow);display:grid;grid-template-columns:minmax(0,1fr);align-content:start;transform-origin:left center}
 .page:focus{outline:none}
 .txt{min-width:0;padding:18px 20px 28px;display:flex;flex-direction:column;gap:14px}
-@media (min-width:880px){
+@media (min-width:880px), (min-width:600px) and (orientation:landscape) and (max-height:600px){
   .page{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-content:stretch}
   .page .scene{height:100%;aspect-ratio:auto;border-right:2px solid var(--line)}
   .txt{padding:30px 34px;justify-content:center}
@@ -64,7 +65,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.3;margin:0
 
 /* 무대 */
 .scene{position:relative;overflow:hidden;aspect-ratio:400/300;max-height:46vh;width:100%;background:#d9c09a;cursor:pointer;user-select:none;-webkit-user-select:none}
-@media (min-width:880px){.scene{max-height:none}}
+@media (min-width:880px), (min-width:600px) and (orientation:landscape) and (max-height:600px){.scene{max-height:none}}
 .scene>svg.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .cast{position:absolute;inset:0;pointer-events:none}
 .actor{position:absolute;bottom:4%;pointer-events:auto}
@@ -135,8 +136,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.3;margin:0
 .small{font-size:14px;color:var(--muted);margin:0}
 .widget{border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
 .widget .hint{font-size:14px;color:var(--muted);margin:0}
-.hanja{display:flex;gap:10px;flex-wrap:wrap}
-.hj{flex:1 1 130px;min-height:116px;border:2px solid var(--line);border-radius:14px;background:var(--paper);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px}
+.hanja{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.hj{min-width:0;min-height:100px;border:2px solid var(--line);border-radius:14px;background:var(--paper);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px}
 .hj .big{font-family:var(--f-display);font-size:50px;line-height:1;color:var(--chc,var(--giwa))}
 .hj .mean{font-size:15px;line-height:1.45;text-align:center}
 canvas.print{width:100%;max-width:420px;aspect-ratio:5/3;border-radius:10px;touch-action:none;cursor:crosshair;display:block;margin:0 auto;background:#efe3c4}
@@ -181,7 +182,7 @@ input[type=text]{min-height:48px;border:2px solid var(--line);border-radius:12px
 /* 표지 */
 .cover .photo{position:relative;overflow:hidden;background:#3a2a1c}
 .cover .photo img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:1/1;max-height:52vh}
-@media (min-width:880px){.cover .photo img{max-height:none}}
+@media (min-width:880px), (min-width:600px) and (orientation:landscape) and (max-height:600px){.cover .photo img{max-height:none}}
 .cover .photo .say{top:auto;bottom:6%;left:5%;max-width:70%}
 .cover h1{font-size:clamp(32px,6.4vw,50px);color:var(--giwa)}
 .cover .sub{font-family:var(--f-voice);font-size:21px;color:var(--noeul);margin:0}
@@ -207,6 +208,34 @@ body.still *,body.still *::before{animation:none!important;transition:none!impor
 .sheet input[type=checkbox]{width:22px;height:22px;accent-color:var(--noeul)}
 .stamp-pop .seal{width:168px;height:168px;font-size:30px;margin:6px auto;animation:thud .55s cubic-bezier(.3,1.6,.5,1)}
 @keyframes thud{from{transform:scale(2.4) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(-8deg);opacity:1}}
+
+/* 모바일: 말풍선을 무대 아래로 내려 얼굴이 가려지지 않게, 인물은 더 크게 */
+.stagewrap{position:relative;min-width:0}
+#sayBox{background:var(--paper);padding:12px 14px 2px;min-height:96px}
+#sayBox .say{position:relative;top:auto;left:auto;right:auto;max-width:none;font-size:17px;border-radius:16px;pointer-events:auto;cursor:pointer}
+#sayBox .say::before{content:"";position:absolute;top:-11px;width:16px;height:16px;background:var(--bubble);border-left:3px solid #6e4127;border-top:3px solid #6e4127;transform:rotate(45deg)}
+#sayBox .say.l::before{left:20%}
+#sayBox .say.r::before{right:20%}
+.tapme{display:none}
+.actor.h{width:min(40%,260px)}
+.actor.e{width:min(34%,230px)}
+.cast.solo .actor.h{width:min(48%,290px)}
+.bar .btn{padding:0 12px}
+@media (max-width:879px) and (orientation:portrait) and (max-height:700px){.scene{max-height:36vh}#sayBox{min-height:84px}}
+@media (max-width:380px){.bar .where{font-size:14px}.chip{padding:3px 7px;font-size:13px}}
+@media (min-width:880px), (min-width:600px) and (orientation:landscape) and (max-height:600px){
+  .stagewrap{position:sticky;top:0;align-self:start;height:var(--bookH,100%);border-right:2px solid var(--line)}
+  .stagewrap .scene{height:100%;aspect-ratio:auto;border-right:0}
+  #sayBox{position:absolute;inset:0 0 auto 0;padding:0;min-height:0;background:none;pointer-events:none;z-index:5}
+  #sayBox .say{position:absolute;top:5%;max-width:62%;font-size:clamp(15px,2.3vw,19px);pointer-events:none}
+  #sayBox .say::before{display:none}
+  #sayBox .say.r{right:4%;left:auto}
+  #sayBox .say.l{left:4%;right:auto}
+  .tapme{display:block}
+  .actor.h{width:min(34%,250px)}
+  .actor.e{width:min(30%,220px)}
+  .cast.solo .actor.h{width:min(40%,280px)}
+}
 </style>
 
 </head>
@@ -527,10 +556,10 @@ function stageHTML(p,bg,withElder,lines){
   talkNow=lines;line=Math.min(line,Math.max(0,(lines||[]).length-1));
   const l=lines&&lines[line];
   const hExpr=l&&l[0]==='h'?l[1]:'smile';
-  return `<div class="scene ${p.kind==='open'&&S.opened[p.ch]?'open':''}" id="scene" role="button" tabindex="0" aria-label="장면을 누르면 다음 대사">${bg}
+  return `<div class="stagewrap"><div class="scene ${p.kind==='open'&&S.opened[p.ch]?'open':''}" id="scene" role="button" tabindex="0" aria-label="장면을 누르면 다음 대사">${bg}
    <div class="cast ${withElder?'':'solo'}">${withElder?`<div class="actor e" id="elder"><span class="shadow"></span>${elder(p.ch,l&&l[0]==='e'?l[1]:'smile')}</div>`:''}
    <div class="actor h" id="hkA"><span class="shadow"></span>${hanok(hExpr,'id="hk"')}</div></div>
-   <div id="sayBox"></div>${lines&&lines.length>1?'<span class="tapme">탭하면 다음 말 ▸</span>':''}</div>`;
+   ${lines&&lines.length>1?'<span class="tapme">탭하면 다음 말 ▸</span>':''}</div><div id="sayBox"></div></div>`;
 }
 function speak(first){
   const L=talkNow;if(!L||!L.length)return;const [who,ex,text,a]=L[line];
@@ -597,7 +626,7 @@ function render(anim=true){
   } else if(p.kind==='epi'){
     const n=stampCount();
     const board=`<div class="board">${[1,2,3,4].map(k=>`<div><span class="seal sm ${S.stamps[k]?'on':''}">${S.stamps[k]?CH[k].seal.replace('\n','<br>'):k+'장'}</span>${CH[k].short}</div>`).join('')}</div>`;
-    const group=`<div class="scene" id="scene" role="button" tabindex="0" aria-label="한옥이와 네 어른">${bgScene('field')}<div class="cast">${[1,2,3,4].map((k,i)=>`<div class="actor" style="left:${2+i*17}%;width:17%;bottom:6%">${S.stamps[k]||n<4?elder(k,'smile'):''}</div>`).join('')}<div class="actor h" style="right:2%;width:26%"><span class="shadow"></span>${hanok(n<4?'think':'smile','id="hk"')}</div></div><div id="sayBox"></div></div>`;
+    const group=`<div class="stagewrap"><div class="scene" id="scene" role="button" tabindex="0" aria-label="한옥이와 네 어른">${bgScene('field')}<div class="cast">${[1,2,3,4].map((k,i)=>`<div class="actor" style="left:${2+i*17}%;width:17%;bottom:6%">${S.stamps[k]||n<4?elder(k,'smile'):''}</div>`).join('')}<div class="actor h" style="right:2%;width:26%"><span class="shadow"></span>${hanok(n<4?'think':'smile','id="hk"')}</div></div></div><div id="sayBox"></div></div>`;
     h= n<4
      ? article('',5,group,`<p class="eyebrow">에필로그</p><h2>도장 ${4-n}개가 더 필요해요</h2>
         <div class="body"><p>마을의 유적 안내판 QR을 찍어 도장 네 개를 모으면 에필로그와 ‘서창 역사 탐험가’ 인증서가 열려요.</p></div>${board}<div class="row"><button class="btn" data-go="toc">목차로</button></div>`)
@@ -632,7 +661,7 @@ function render(anim=true){
 }
 function chrome(){
   const p=P[S.page];
-  document.getElementById('where').textContent=p.kind==='cover'?'서창 웹북':chLabel(p.ch);
+  document.getElementById('where').textContent=p.kind==='cover'?'서창 웹북':(p.ch>=1&&p.ch<=4?`${p.ch}장 · ${CH[p.ch].short}`:chLabel(p.ch));
   document.getElementById('stampChip').textContent=`도장 ${stampCount()}/4`;
   document.getElementById('count').textContent=`${S.page+1} / ${P.length}`;
   document.getElementById('prev').disabled=S.page===0;document.getElementById('next').disabled=S.page===P.length-1;
@@ -709,7 +738,7 @@ function bind(p){
       if(e&&e.target.closest('.hk')){const r=POKE[Math.floor(Math.random()*POKE.length)];say1('h',...r);return}
       if(p.kind==='open'&&!S.opened[p.ch]&&e&&!e.target.closest('.actor')){openDoor(p.ch);return}
       if(talkNow&&talkNow.length>1){line=(line+1)%talkNow.length;speak(false)}};
-    sc.addEventListener('click',adv);sc.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();adv(null)}})}
+    sc.addEventListener('click',adv);const sb=document.getElementById('sayBox');if(sb)sb.addEventListener('click',()=>adv(null));sc.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();adv(null)}})}
   const kn=document.getElementById('knock');if(kn)kn.onclick=()=>openDoor(p.ch);
   document.querySelectorAll('.hj').forEach(el=>el.onclick=()=>{const open=el.getAttribute('aria-expanded')==='true';const [a,m]=el.dataset.mean.split('|');el.setAttribute('aria-expanded',!open);el.querySelector('.mean').innerHTML=open?'탭해서 열기':`<b>${a}</b><br>${m}`;if(!open)say1('h','surprise','오~ 그런 뜻이었구나!','hop')});
   const r=document.getElementById('resume');if(r)r.onclick=()=>{let s={};try{s=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}go(s.page||1)};
@@ -783,6 +812,7 @@ function makeCert(){
 function fromHash(){const m=(location.hash||'').match(/^#qr-(\w+)$/);if(!m)return false;const c=+Object.keys(CH).find(k=>CH[k].key===m[1]);if(!c)return false;
   S.page=idx(`c${c}-open`);S.opened[c]=true;line=0;save();render();stamp(c,true);return true}
 window.addEventListener('hashchange',fromHash);
+const setBookH=()=>document.documentElement.style.setProperty('--bookH',document.getElementById('book').clientHeight+'px');setBookH();addEventListener('resize',setBookH);
 if(!fromHash())render();
 })();
 </script>
